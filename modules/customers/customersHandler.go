@@ -100,5 +100,15 @@ func (h RequestHandler) Update(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, res)
+}
 
+func (h RequestHandler) Delete(c *gin.Context) {
+	id := c.Param("id")
+
+	res, err := h.ctrl.Delete(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, res)
 }

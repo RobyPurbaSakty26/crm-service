@@ -1,9 +1,5 @@
 package customers
 
-import (
-	"fmt"
-)
-
 type CustomersControllers struct {
 	useCase *CustomersUsecase
 }
@@ -117,7 +113,11 @@ func (c CustomersControllers) Update(req *CreateRequest, id any) (*CreateRespons
 		Avatar:    data.Avatar,
 	}
 
-	customer.FirstName = req.FirstName
+	if req.FirstName == "" {
+		customer.FirstName = data.FirstName
+	} else {
+		customer.FirstName = req.FirstName
+	}
 	customer.LastName = req.LastName
 	customer.Email = req.Email
 	customer.Avatar = req.Avatar
@@ -135,8 +135,6 @@ func (c CustomersControllers) Update(req *CreateRequest, id any) (*CreateRespons
 	// 	fmt.Println("dibawah")
 	// }
 
-	fmt.Println(customer)
-
 	err = c.useCase.Update(customer)
 	if err != nil {
 		return nil, err
@@ -153,4 +151,31 @@ func (c CustomersControllers) Update(req *CreateRequest, id any) (*CreateRespons
 	}
 
 	return response, nil
+}
+
+type DeleteResponse struct {
+	Message string
+}
+
+func (c CustomersControllers) Delete(id any) (*DeleteResponse, error) {
+	data, err := c.useCase.ReadByPk(id)
+	if err != nil {
+		return nil, err
+	}
+
+	customer := &Customers{
+		ID:        data.ID,
+		FirstName: data.FirstName,
+		LastName:  data.LastName,
+		Email:     data.Email,
+		Avatar:    data.Avatar,
+	}
+
+	if err := c.useCase.Delete(customer); err != nil {
+		return nil, err
+	}
+	res := &DeleteResponse{
+		Message: "Success",
+	}
+	return res, nil
 }

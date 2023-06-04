@@ -27,6 +27,7 @@ func main() {
 	r.GET("/customers", customersHandler.Read)
 	r.GET("/customers/:id", customersHandler.ReadByPk)
 	r.PUT("/customers/:id", customersHandler.Update)
+	r.DELETE("/customers/:id", customersHandler.Delete)
 
 	err = r.Run(":8080")
 	if err != nil {

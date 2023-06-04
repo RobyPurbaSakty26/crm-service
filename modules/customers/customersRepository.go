@@ -31,3 +31,7 @@ func (c CustomersRepository) FindById(id any) (Customers, error) {
 func (c CustomersRepository) Update(customers *Customers) error {
 	return c.db.Save(customers).Error
 }
+
+func (c CustomersRepository) Delete(customer *Customers) error {
+	return c.db.Delete(customer).Error
+}
