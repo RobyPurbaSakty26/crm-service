@@ -2,7 +2,6 @@ package customers
 
 import (
 	"fmt"
-	"time"
 )
 
 type CustomersControllers struct {
@@ -125,13 +124,16 @@ func (c CustomersControllers) Update(req *CreateRequest, id any) (*CreateRespons
 
 	// Check if created_at field is set
 	createdAt := data.CreatedAt
+	customer.CreatedAt = createdAt
 
 	// Check if the created_at value is set to a valid date
-	if createdAt.IsZero() || createdAt.Year() < 1 {
-		customer.CreatedAt = time.Now() // Assign the current time as created_at value
-	} else {
-		customer.CreatedAt = createdAt // Preserve the original created_at value
-	}
+	// if createdAt.IsZero() || createdAt.Year() < 1 {
+	// 	customer.CreatedAt = time.Now() // Assign the current time as created_at value
+	// 	fmt.Println("diatas")
+	// } else {
+	// 	customer.CreatedAt = createdAt // Preserve the original created_at value
+	// 	fmt.Println("dibawah")
+	// }
 
 	fmt.Println(customer)
 
@@ -142,6 +144,7 @@ func (c CustomersControllers) Update(req *CreateRequest, id any) (*CreateRespons
 	response := &CreateResponse{
 		Message: "Success",
 		Data: CustomersItemsResposnse{
+			ID:        customer.ID,
 			FirstName: customer.FirstName,
 			LastName:  customer.LastName,
 			Email:     customer.Email,
