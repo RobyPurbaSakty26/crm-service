@@ -26,6 +26,7 @@ func main() {
 	r.POST("/customers", customersHandler.Create)
 	r.GET("/customers", customersHandler.Read)
 	r.GET("/customers/:id", customersHandler.ReadByPk)
+	r.PUT("/customers/:id", customersHandler.Update)
 
 	err = r.Run(":8080")
 	if err != nil {

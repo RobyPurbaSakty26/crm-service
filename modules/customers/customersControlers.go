@@ -1,5 +1,10 @@
 package customers
 
+import (
+	"fmt"
+	"time"
+)
+
 type CustomersControllers struct {
 	useCase *CustomersUsecase
 }
@@ -91,4 +96,58 @@ func (c CustomersControllers) ReadByPk(id any) (*ReadByIdResponse, error) {
 		},
 	}
 	return res, nil
+}
+
+type UpdateResponse struct {
+	Message string                  `json:"message"`
+	Data    CustomersItemsResposnse `json:"data"`
+}
+
+func (c CustomersControllers) Update(req *CreateRequest, id any) (*CreateResponse, error) {
+
+	data, err := c.useCase.ReadByPk(id)
+
+	if err != nil {
+		return nil, err
+	}
+	customer := &Customers{
+		ID:        data.ID,
+		Email:     data.Email,
+		FirstName: data.FirstName,
+		LastName:  data.LastName,
+		Avatar:    data.Avatar,
+	}
+
+	customer.FirstName = req.FirstName
+	customer.LastName = req.LastName
+	customer.Email = req.Email
+	customer.Avatar = req.Avatar
+
+	// Check if created_at field is set
+	createdAt := data.CreatedAt
+
+	// Check if the created_at value is set to a valid date
+	if createdAt.IsZero() || createdAt.Year() < 1 {
+		customer.CreatedAt = time.Now() // Assign the current time as created_at value
+	} else {
+		customer.CreatedAt = createdAt // Preserve the original created_at value
+	}
+
+	fmt.Println(customer)
+
+	err = c.useCase.Update(customer)
+	if err != nil {
+		return nil, err
+	}
+	response := &CreateResponse{
+		Message: "Success",
+		Data: CustomersItemsResposnse{
+			FirstName: customer.FirstName,
+			LastName:  customer.LastName,
+			Email:     customer.Email,
+			Avatar:    customer.Avatar,
+		},
+	}
+
+	return response, nil
 }

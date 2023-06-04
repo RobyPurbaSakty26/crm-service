@@ -21,3 +21,7 @@ func (u CustomersUsecase) Read() ([]Customers, error) {
 func (u CustomersUsecase) ReadByPk(id any) (Customers, error) {
 	return u.repo.FindById(id)
 }
+
+func (u CustomersUsecase) Update(customer *Customers) error {
+	return u.repo.Update(customer)
+}

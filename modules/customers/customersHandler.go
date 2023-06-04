@@ -82,3 +82,23 @@ func (h RequestHandler) ReadByPk(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 
 }
+
+func (h RequestHandler) Update(c *gin.Context) {
+	id := c.Param("id")
+
+	var req CreateRequest
+
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	res, err := h.ctrl.Update(&req, id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+
+}
