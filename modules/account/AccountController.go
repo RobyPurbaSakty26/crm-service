@@ -53,8 +53,8 @@ func (c AccountControllers) create(req *CreateRequest) (*CreateResponse, error) 
 		Username: req.Username,
 		Password: pwd,
 		Role_ID:  req.Role_ID,
-		Verified: req.Verified,
-		Active:   req.Verified,
+		Active:   "false",
+		Verified: "false",
 	}
 	err = c.useCase.create(&account)
 	if err != nil {
