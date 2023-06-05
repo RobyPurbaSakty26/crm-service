@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crm-service/modules/account"
 	"crm-service/modules/customers"
 	"log"
 
@@ -29,6 +30,9 @@ func main() {
 	r.GET("/customers/:id", customersHandler.ReadByPk)
 	r.PUT("/customers/:id", customersHandler.Update)
 	r.DELETE("/customers/:id", customersHandler.Delete)
+
+	accountHandler := account.DefaultRequestHandler(db)
+	r.POST("/register", accountHandler.Create)
 
 	err = r.Run(":8080")
 	if err != nil {
