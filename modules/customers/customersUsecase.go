@@ -29,3 +29,7 @@ func (u CustomersUsecase) Update(customer *Customers) error {
 func (u CustomersUsecase) Delete(cutomer *Customers) error {
 	return u.repo.Delete(cutomer)
 }
+
+func (u CustomersUsecase) getByEmail(email string) ([]Customers, error) {
+	return u.repo.FindByEmail(email)
+}

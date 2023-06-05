@@ -112,3 +112,15 @@ func (h RequestHandler) Delete(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, res)
 }
+
+func (h RequestHandler) GetByEmail(c *gin.Context) {
+	email := c.Query("email")
+
+	res, err := h.ctrl.getByEmail(email)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}

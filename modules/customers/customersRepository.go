@@ -1,6 +1,8 @@
 package customers
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type CustomersRepository struct {
 	db *gorm.DB
@@ -34,4 +36,14 @@ func (c CustomersRepository) Update(customers *Customers) error {
 
 func (c CustomersRepository) Delete(customer *Customers) error {
 	return c.db.Delete(customer).Error
+}
+
+func (c CustomersRepository) FindByEmail(email string) ([]Customers, error) {
+	var customer []Customers
+
+	err := c.db.Where("email LIKE ?", "%"+email+"%").Find(&customer).Error
+	if err != nil {
+		return customer, err
+	}
+	return customer, nil
 }

@@ -179,3 +179,41 @@ func (c CustomersControllers) Delete(id any) (*DeleteResponse, error) {
 	}
 	return res, nil
 }
+
+type GetByEmailResponse struct {
+	Status string                    `json:"message"`
+	Data   []CustomersItemsResposnse `json:"data"`
+}
+
+func (c CustomersControllers) getByEmail(email string) (*GetByEmailResponse, error) {
+	data, err := c.useCase.getByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &GetByEmailResponse{}
+	res.Status = "Success"
+	for _, customer := range data {
+		res.Data = append(res.Data, CustomersItemsResposnse{
+			ID:        customer.ID,
+			FirstName: customer.FirstName,
+			LastName:  customer.LastName,
+			Email:     customer.Email,
+			Avatar:    customer.Avatar,
+		})
+	}
+
+	// res := &GetByEmailResponse{
+	// 	Status: "Success"
+	// 	Data: CustomersItemsResposnse{
+	// 		ID:        data.ID,
+	// 		FirstName: data.FirstName,
+	// 		LastName:  data.LastName,
+	// 		Email:     data.Email,
+	// 		Avatar:    data.Avatar,
+	// 	},
+	// }
+
+	return res, nil
+
+}

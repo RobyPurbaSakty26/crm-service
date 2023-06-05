@@ -25,6 +25,7 @@ func main() {
 	customersHandler := customers.DefaultRequestHandler(db)
 	r.POST("/customers", customersHandler.Create)
 	r.GET("/customers", customersHandler.Read)
+	r.GET("/customersquery", customersHandler.GetByEmail)
 	r.GET("/customers/:id", customersHandler.ReadByPk)
 	r.PUT("/customers/:id", customersHandler.Update)
 	r.DELETE("/customers/:id", customersHandler.Delete)
