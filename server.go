@@ -24,14 +24,14 @@ func main() {
 	r := gin.Default()
 
 	customersHandler := customers.DefaultRequestHandler(db)
+	accountHandler := account.DefaultRequestHandler(db)
 	r.POST("/customers", customersHandler.Create)
-	r.GET("/customers", customersHandler.Read)
+	r.GET("/customers", accountHandler.AuthMiddleware, customersHandler.Read)
 	r.GET("/customersquery", customersHandler.GetByEmail)
 	r.GET("/customers/:id", customersHandler.ReadByPk)
 	r.PUT("/customers/:id", customersHandler.Update)
 	r.DELETE("/customers/:id", customersHandler.Delete)
 
-	accountHandler := account.DefaultRequestHandler(db)
 	r.POST("/register", accountHandler.Create)
 	r.GET("/register", accountHandler.ReadByUsername)
 	r.POST("/login", accountHandler.Login)

@@ -3,6 +3,7 @@ package account
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -92,4 +93,25 @@ func (h RequestHandler) Login(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, res)
+}
+
+func (h RequestHandler) AuthMiddleware(c *gin.Context) {
+	// get token from authorization
+	authHeader := c.GetHeader("Authorization")
+	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+	// verify token
+	token, err := h.ctrl.verifyJWT(tokenString, "secret-key")
+	if err != nil {
+		c.JSON(http.StatusNonAuthoritativeInfo, ErrorResponse{err.Error()})
+		c.Abort()
+		return
+	}
+
+	c.Set("id", token.ID)
+	c.Set("username", token.username)
+	c.Set("role", token.Role)
+
+	c.Next()
+
 }

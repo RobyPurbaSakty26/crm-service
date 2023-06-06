@@ -156,7 +156,7 @@ type payloadJWT struct {
 	Role     string
 }
 
-func VerifyJWT(tokenString, secret string) (*payloadJWT, error) {
+func (c AccountControllers) verifyJWT(tokenString, secret string) (*payloadJWT, error) {
 	// Memeriksa keaslian token
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil
