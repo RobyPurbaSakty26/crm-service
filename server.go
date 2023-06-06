@@ -27,7 +27,6 @@ func main() {
 	accountHandler := account.DefaultRequestHandler(db)
 	r.POST("/customers", accountHandler.AuthMiddleware, customersHandler.Create)
 	r.GET("/customers", accountHandler.AuthMiddleware, customersHandler.Read)
-	r.GET("/customersquery", accountHandler.AuthMiddleware, customersHandler.GetByEmail)
 	r.GET("/customers/:id", accountHandler.AuthMiddleware, customersHandler.ReadByPk)
 	r.PUT("/customers/:id", customersHandler.Update)
 	r.DELETE("/customers/:id", accountHandler.AuthMiddleware, customersHandler.Delete)

@@ -185,8 +185,8 @@ type GetByEmailResponse struct {
 	Data   []CustomersItemsResposnse `json:"data"`
 }
 
-func (c CustomersControllers) getByEmail(email string) (*GetByEmailResponse, error) {
-	data, err := c.useCase.getByEmail(email)
+func (c CustomersControllers) getByEmail(email, firstName string) (*GetByEmailResponse, error) {
+	data, err := c.useCase.getByEmail(email, firstName)
 	if err != nil {
 		return nil, err
 	}

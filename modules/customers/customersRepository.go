@@ -38,10 +38,10 @@ func (c CustomersRepository) Delete(customer *Customers) error {
 	return c.db.Delete(customer).Error
 }
 
-func (c CustomersRepository) FindByEmail(email string) ([]Customers, error) {
+func (c CustomersRepository) FindByEmail(email, firstName string) ([]Customers, error) {
 	var customer []Customers
 
-	err := c.db.Where("email LIKE ?", "%"+email+"%").Find(&customer).Error
+	err := c.db.Where("email LIKE ?", "%"+email+"%").Or("first_name LIKE ?", "%"+firstName+"%").Find(&customer).Error
 	if err != nil {
 		return customer, err
 	}

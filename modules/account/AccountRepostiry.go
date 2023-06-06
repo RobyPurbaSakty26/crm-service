@@ -19,7 +19,7 @@ func (r accountRepository) save(a *Actor) error {
 func (c accountRepository) FindByUsername(username string) (Actor, error) {
 	var actor Actor
 
-	err := c.db.Where("username = ?", string(username)).First(&actor).Error
+	err := c.db.Where("username = ?", username).First(&actor).Error
 	if err != nil {
 		return actor, err
 	}

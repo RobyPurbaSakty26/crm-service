@@ -58,8 +58,9 @@ func (h RequestHandler) Create(c *gin.Context) {
 func (h RequestHandler) Read(c *gin.Context) {
 
 	email := c.Query("email")
-	if email != "" {
-		res, err := h.ctrl.getByEmail(email)
+	firstName := c.Query("first_name")
+	if email != "" || firstName != "" {
+		res, err := h.ctrl.getByEmail(email, firstName)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
 			return
@@ -125,14 +126,14 @@ func (h RequestHandler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (h RequestHandler) GetByEmail(c *gin.Context) {
-	email := c.Query("email")
+// func (h RequestHandler) GetByEmail(c *gin.Context) {
+// 	email := c.Query("email")
 
-	res, err := h.ctrl.getByEmail(email)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
-		return
-	}
+// 	res, err := h.ctrl.getByEmail(email)
+// 	if err != nil {
+// 		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, res)
-}
+// 	c.JSON(http.StatusOK, res)
+// }

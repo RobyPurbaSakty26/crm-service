@@ -30,6 +30,6 @@ func (u CustomersUsecase) Delete(cutomer *Customers) error {
 	return u.repo.Delete(cutomer)
 }
 
-func (u CustomersUsecase) getByEmail(email string) ([]Customers, error) {
-	return u.repo.FindByEmail(email)
+func (u CustomersUsecase) getByEmail(email, firstName string) ([]Customers, error) {
+	return u.repo.FindByEmail(email, firstName)
 }
