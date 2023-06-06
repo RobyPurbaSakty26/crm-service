@@ -33,6 +33,8 @@ func main() {
 
 	accountHandler := account.DefaultRequestHandler(db)
 	r.POST("/register", accountHandler.Create)
+	r.GET("/register", accountHandler.ReadByUsername)
+	r.POST("/login", accountHandler.Login)
 
 	err = r.Run(":8080")
 	if err != nil {

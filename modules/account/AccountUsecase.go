@@ -13,3 +13,7 @@ func NewUseCase(repo *accountRepository) *AccountUsecase {
 func (u AccountUsecase) create(a *Actor) error {
 	return u.repo.save(a)
 }
+
+func (u AccountUsecase) getByUsername(username string) (Actor, error) {
+	return u.repo.FindByUsername(username)
+}
