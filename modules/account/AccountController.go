@@ -2,7 +2,9 @@ package account
 
 import (
 	"fmt"
+	"strconv"
 
+	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -87,8 +89,18 @@ func ComparePassword(hashedPassword string, password string) error {
 }
 
 type responeLogin struct {
-	Message string                `json:"message"`
-	Data    AccountItemsResposnse `json:"data"`
+	Message string                     `json:"message"`
+	Data    AccountItemsLoginResposnse `json:"data"`
+}
+
+type AccountItemsLoginResposnse struct {
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Role_ID  uint   `json:"role_id"`
+	Verified string `json:"verified"`
+	Active   string `json:"active"`
+	Token    string `json:"token"`
 }
 
 type readByUsernameResponse struct {
@@ -116,6 +128,61 @@ func (c AccountControllers) ReadByUsername(username string) (*readByUsernameResp
 	return res, nil
 }
 
+// login generate tokan and verify token
+func GenerateToken(id, username, role, secret string) (string, error) {
+	// ini sialisasi klaim
+	claims := jwt.MapClaims{
+		"sub":      id,
+		"username": username,
+		"role":     role,
+	}
+
+	// tandatangan token dengan kunci rahasia
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedToken, err := token.SignedString([]byte(secret))
+
+	if err != nil {
+		return "", err
+	}
+
+	return signedToken, nil
+
+}
+
+type payloadJWT struct {
+	ID       string
+	username string
+	Role     string
+}
+
+func VerifyJWT(tokenString, secret string) (*payloadJWT, error) {
+	// Memeriksa keaslian token
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	})
+
+	if err != nil || !token.Valid {
+		fmt.Print(err)
+		return nil, err
+	}
+
+	// Token valid, dapatkan informasi pengguna dari token
+	claims := token.Claims.(jwt.MapClaims)
+	userID := claims["sub"].(string)
+	userName := claims["username"].(string)
+	role := claims["role"].(string)
+
+	data := payloadJWT{
+
+		ID:       userID,
+		username: userName,
+		Role:     role,
+	}
+
+	return &data, nil
+}
+
 func (c AccountControllers) login(req *loginRequest) (*responeLogin, error) {
 
 	data, err := c.ReadByUsername(req.Username)
@@ -123,25 +190,27 @@ func (c AccountControllers) login(req *loginRequest) (*responeLogin, error) {
 		return nil, err
 	}
 
-	// fmt.Println("DATA ", data)
-	fmt.Println("USERNAME ", req.Username)
-	fmt.Println("USERNAME ", req.Password)
-	fmt.Println("USERNAME ", data.Data.Password)
-
 	err = ComparePassword(data.Data.Password, req.Password)
 	if err != nil {
 		return nil, err
 	}
 
+	secret := "secret-key"
+
+	token, err := GenerateToken(strconv.FormatUint(uint64(data.Data.ID), 10), data.Data.Username, strconv.FormatUint(uint64(data.Data.Role_ID), 10), secret)
+	if err != nil {
+		return nil, err
+	}
 	res := &responeLogin{
 		Message: "Success",
-		Data: AccountItemsResposnse{
+		Data: AccountItemsLoginResposnse{
 			ID:       data.Data.ID,
 			Username: data.Data.Username,
 			Password: data.Data.Password,
 			Role_ID:  data.Data.Role_ID,
 			Active:   data.Data.Active,
 			Verified: data.Data.Verified,
+			Token:    token,
 		},
 	}
 
