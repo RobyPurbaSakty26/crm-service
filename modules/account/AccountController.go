@@ -216,3 +216,28 @@ func (c AccountControllers) login(req *loginRequest) (*responeLogin, error) {
 
 	return res, nil
 }
+
+type GettAllResponse struct {
+	Status string                  `json:"status"`
+	Data   []AccountItemsResposnse `json:"data"`
+}
+
+func (c AccountControllers) Read() (*GettAllResponse, error) {
+	actor, err := c.useCase.Read()
+	if err != nil {
+		return nil, err
+	}
+
+	res := &GettAllResponse{}
+	for _, a := range actor {
+		res.Data = append(res.Data, AccountItemsResposnse{
+			ID:       a.ID,
+			Username: a.Username,
+			Password: a.Password,
+			Role_ID:  a.Role_ID,
+			Active:   a.Active,
+			Verified: a.Verified,
+		})
+	}
+	return res, nil
+}

@@ -26,3 +26,11 @@ func (c accountRepository) FindByUsername(username string) (Actor, error) {
 
 	return actor, nil
 }
+
+// get all
+func (c accountRepository) Find() ([]Actor, error) {
+	var customers []Actor
+	err := c.db.Find(&customers).Error
+	return customers, err
+
+}

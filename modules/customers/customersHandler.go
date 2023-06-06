@@ -56,6 +56,18 @@ func (h RequestHandler) Create(c *gin.Context) {
 }
 
 func (h RequestHandler) Read(c *gin.Context) {
+
+	email := c.Query("email")
+	if email != "" {
+		res, err := h.ctrl.getByEmail(email)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, res)
+	}
+
 	res, err := h.ctrl.Read()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})

@@ -64,19 +64,31 @@ type loginRequest struct {
 }
 
 func (h RequestHandler) ReadByUsername(c *gin.Context) {
+
 	username := c.Query("username")
 
-	res, err := h.ctrl.ReadByUsername(username)
-	if err != nil {
-		if errors.Is(gorm.ErrRecordNotFound, err) {
-			c.JSON(http.StatusNotFound, ErrorResponse{Error: err.Error()})
+	if username != "" {
+		res, err := h.ctrl.ReadByUsername(username)
+		if err != nil {
+			if errors.Is(gorm.ErrRecordNotFound, err) {
+				c.JSON(http.StatusNotFound, ErrorResponse{Error: err.Error()})
+				return
+			}
+			c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
+
+		c.JSON(http.StatusOK, res)
 		return
 	}
 
+	res, err := h.ctrl.Read()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, res)
+
 }
 
 func (h RequestHandler) Login(c *gin.Context) {

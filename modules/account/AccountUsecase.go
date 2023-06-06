@@ -17,3 +17,7 @@ func (u AccountUsecase) create(a *Actor) error {
 func (u AccountUsecase) getByUsername(username string) (Actor, error) {
 	return u.repo.FindByUsername(username)
 }
+
+func (u AccountUsecase) Read() ([]Actor, error) {
+	return u.repo.Find()
+}

@@ -68,7 +68,7 @@ func (c CustomersControllers) Read() (*ReadResponse, error) {
 			ID:        customer.ID,
 			FirstName: customer.FirstName,
 			LastName:  customer.LastName,
-			Email:     customer.Avatar,
+			Email:     customer.Email,
 			Avatar:    customer.Avatar,
 		})
 	}
