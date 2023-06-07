@@ -241,3 +241,49 @@ func (c AccountControllers) Read() (*GettAllResponse, error) {
 	}
 	return res, nil
 }
+
+func (c AccountControllers) Update(req *CreateRequest, id any) (*CreateResponse, error) {
+
+	data, err := c.useCase.ReadByPk(id)
+
+	if err != nil {
+		return nil, err
+	}
+	actor := &Actor{
+		ID:       data.ID,
+		Username: data.Username,
+		Password: data.Password,
+		Role_ID:  data.Role_ID,
+		Verified: data.Verified,
+		Active:   data.Verified,
+	}
+
+	if req.Active != "" {
+		actor.Active = req.Active
+	}
+	if req.Verified != "" {
+		actor.Verified = req.Verified
+	}
+
+	// Check if created_at field is set
+	createdAt := data.CreatedAt
+	actor.CreatedAt = createdAt
+
+	err = c.useCase.Update(actor)
+	if err != nil {
+		return nil, err
+	}
+	response := &CreateResponse{
+		Message: "Success",
+		Data: AccountItemsResposnse{
+			ID:       actor.ID,
+			Username: actor.Username,
+			Password: actor.Password,
+			Role_ID:  actor.Role_ID,
+			Verified: actor.Verified,
+			Active:   actor.Active,
+		},
+	}
+
+	return response, nil
+}

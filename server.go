@@ -32,8 +32,9 @@ func main() {
 	r.DELETE("/customers/:id", accountHandler.AuthMiddleware, customersHandler.Delete)
 
 	r.POST("/register", accountHandler.Create)
-	r.GET("/actors", accountHandler.AuthMiddleware, accountHandler.ReadByUsername)
+	r.GET("/actors", accountHandler.AuthMiddleware, accountHandler.AuthMiddleware, accountHandler.ReadByUsername)
 	r.POST("/login", accountHandler.Login)
+	r.PUT("/approval/:id", accountHandler.AuthMiddleware, accountHandler.Update)
 
 	err = r.Run(":8080")
 	if err != nil {

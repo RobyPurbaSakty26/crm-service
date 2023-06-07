@@ -2,6 +2,7 @@ package account
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -126,4 +127,39 @@ func (h RequestHandler) AuthMiddleware(c *gin.Context) {
 
 	c.Next()
 
+}
+
+func (h RequestHandler) Update(c *gin.Context) {
+	id := c.Param("id")
+	var req CreateRequest
+
+	role, isErr := c.Get("role")
+	if isErr != true {
+		c.JSON(http.StatusBadRequest, ErrorResponse{"Role tidak ditemukan"})
+		fmt.Println("role : ", isErr, role)
+		return
+	}
+
+	fmt.Println("role   :   ", role)
+	if role != "2" {
+		c.JSON(http.StatusNonAuthoritativeInfo, ErrorResponse{"You aren't not super admin"})
+		return
+	}
+
+	if id == "" {
+		c.JSON(http.StatusNotFound, ErrorResponse{"Param not found"})
+		return
+	}
+
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: err.Error()})
+		return
+	}
+
+	res, err := h.ctrl.Update(&req, id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{err.Error()})
+	}
+
+	c.JSON(http.StatusOK, res)
 }

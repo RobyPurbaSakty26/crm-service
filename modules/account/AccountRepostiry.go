@@ -29,8 +29,21 @@ func (c accountRepository) FindByUsername(username string) (Actor, error) {
 
 // get all
 func (c accountRepository) Find() ([]Actor, error) {
-	var customers []Actor
-	err := c.db.Find(&customers).Error
-	return customers, err
+	var actor []Actor
+	err := c.db.Find(&actor).Error
+	return actor, err
 
+}
+
+// update
+func (c accountRepository) Update(actor *Actor) error {
+	return c.db.Save(actor).Error
+}
+
+// find by id
+func (c accountRepository) FindById(id any) (Actor, error) {
+	var actor Actor
+	err := c.db.First(&actor, id).Error
+
+	return actor, err
 }

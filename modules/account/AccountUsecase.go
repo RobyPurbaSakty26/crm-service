@@ -21,3 +21,11 @@ func (u AccountUsecase) getByUsername(username string) (Actor, error) {
 func (u AccountUsecase) Read() ([]Actor, error) {
 	return u.repo.Find()
 }
+
+func (u AccountUsecase) Update(actor *Actor) error {
+	return u.repo.Update(actor)
+}
+
+func (u AccountUsecase) ReadByPk(id any) (Actor, error) {
+	return u.repo.FindById(id)
+}
