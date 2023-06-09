@@ -11,7 +11,7 @@ import (
 )
 
 func initDB() (*gorm.DB, error) {
-	dsn := "root:1234@tcp(localhost:3306)/mini_project?parseTime=true"
+	dsn := "root:password@tcp(db:3306)/mini_project?parseTime=true"
 	return gorm.Open(mysql.Open(dsn), &gorm.Config{})
 }
 
