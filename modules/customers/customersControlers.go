@@ -1,11 +1,20 @@
 package customers
 
 type CustomersControllers struct {
-	useCase *CustomersUsecase
+	useCase CustomerUsecaseInterface
 }
 
-func NewConstomersConstroller(useCase *CustomersUsecase) *CustomersControllers {
-	return &CustomersControllers{
+type CustomerControllersInterface interface {
+	Create(req *CreateRequest) (*CreateResponse, error)
+	Read() (*ReadResponse, error)
+	ReadByPk(id any) (*ReadByIdResponse, error)
+	Update(req *CreateRequest, id any) (*CreateResponse, error)
+	Delete(id any) (*DeleteResponse, error)
+	getByEmail(email, firstName string) (*GetByEmailResponse, error)
+}
+
+func NewConstomersConstroller(useCase CustomerUsecaseInterface) CustomerControllersInterface {
+	return CustomersControllers{
 		useCase: useCase,
 	}
 }
@@ -186,7 +195,7 @@ type GetByEmailResponse struct {
 }
 
 func (c CustomersControllers) getByEmail(email, firstName string) (*GetByEmailResponse, error) {
-	data, err := c.useCase.getByEmail(email, firstName)
+	data, err := c.useCase.GetByEmail(email, firstName)
 	if err != nil {
 		return nil, err
 	}

@@ -1,11 +1,20 @@
 package customers
 
 type CustomersUsecase struct {
-	repo *CustomersRepository
+	repo CustomerRepositoryInterface
 }
 
-func NewUseCase(repo *CustomersRepository) *CustomersUsecase {
-	return &CustomersUsecase{
+type CustomerUsecaseInterface interface {
+	Create(customer *Customers) error
+	Read() ([]Customers, error)
+	ReadByPk(id any) (Customers, error)
+	Update(customer *Customers) error
+	Delete(cutomer *Customers) error
+	GetByEmail(email, firstName string) ([]Customers, error)
+}
+
+func NewUseCase(repo CustomerRepositoryInterface) CustomerUsecaseInterface {
+	return CustomersUsecase{
 		repo: repo,
 	}
 }
@@ -30,6 +39,6 @@ func (u CustomersUsecase) Delete(cutomer *Customers) error {
 	return u.repo.Delete(cutomer)
 }
 
-func (u CustomersUsecase) getByEmail(email, firstName string) ([]Customers, error) {
+func (u CustomersUsecase) GetByEmail(email, firstName string) ([]Customers, error) {
 	return u.repo.FindByEmail(email, firstName)
 }

@@ -9,11 +9,20 @@ import (
 )
 
 type AccountControllers struct {
-	useCase *AccountUsecase
+	useCase UsecaseInterface
 }
 
-func NewAccountConstroller(useCase *AccountUsecase) *AccountControllers {
-	return &AccountControllers{
+type ConrollerInterface interface {
+	create(req *CreateRequest) (*CreateResponse, error)
+	ReadByUsername(username string) (*readByUsernameResponse, error)
+	Read() (*GettAllResponse, error)
+	login(req *loginRequest) (*responeLogin, error)
+	verifyJWT(tokenString, secret string) (*payloadJWT, error)
+	Update(req *CreateRequest, id any) (*CreateResponse, error)
+}
+
+func NewAccountConstroller(useCase UsecaseInterface) ConrollerInterface {
+	return AccountControllers{
 		useCase: useCase,
 	}
 }
@@ -58,7 +67,7 @@ func (c AccountControllers) create(req *CreateRequest) (*CreateResponse, error) 
 		Active:   "false",
 		Verified: "false",
 	}
-	err = c.useCase.create(&account)
+	err = c.useCase.Create(&account)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +119,7 @@ type readByUsernameResponse struct {
 
 func (c AccountControllers) ReadByUsername(username string) (*readByUsernameResponse, error) {
 
-	account, err := c.useCase.getByUsername(username)
+	account, err := c.useCase.GetByUsername(username)
 	if err != nil {
 		return nil, err
 	}

@@ -20,16 +20,23 @@ type CreateRequest struct {
 }
 
 type RequestHandler struct {
-	ctrl *AccountControllers
+	ctrl ConrollerInterface
+}
+type RequestHandlerInterface interface {
+	Create(c *gin.Context)
+	ReadByUsername(c *gin.Context)
+	Login(c *gin.Context)
+	AuthMiddleware(c *gin.Context)
+	Update(c *gin.Context)
 }
 
-func NewRequestHandler(ctrl *AccountControllers) *RequestHandler {
+func NewRequestHandler(ctrl ConrollerInterface) RequestHandlerInterface {
 	return &RequestHandler{
 		ctrl: ctrl,
 	}
 }
 
-func DefaultRequestHandler(db *gorm.DB) *RequestHandler {
+func DefaultRequestHandler(db *gorm.DB) RequestHandlerInterface {
 	return NewRequestHandler(
 		NewAccountConstroller(
 			NewUseCase(

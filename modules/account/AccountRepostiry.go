@@ -4,15 +4,23 @@ import (
 	"gorm.io/gorm"
 )
 
+type AccountRepositoryInterface interface {
+	Save(a *Actor) error
+	FindByUsername(username string) (Actor, error)
+	Find() ([]Actor, error)
+	Update(actor *Actor) error
+	FindById(id any) (Actor, error)
+}
+
 type accountRepository struct {
 	db *gorm.DB
 }
 
-func newAccountRepository(db *gorm.DB) *accountRepository {
-	return &accountRepository{db: db}
+func newAccountRepository(db *gorm.DB) AccountRepositoryInterface {
+	return &accountRepository{db}
 }
 
-func (r accountRepository) save(a *Actor) error {
+func (r accountRepository) Save(a *Actor) error {
 	return r.db.Create(a).Error
 }
 

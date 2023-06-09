@@ -1,20 +1,28 @@
 package account
 
 type AccountUsecase struct {
-	repo *accountRepository
+	repo AccountRepositoryInterface
 }
 
-func NewUseCase(repo *accountRepository) *AccountUsecase {
-	return &AccountUsecase{
+type UsecaseInterface interface {
+	Create(a *Actor) error
+	GetByUsername(username string) (Actor, error)
+	Read() ([]Actor, error)
+	Update(actor *Actor) error
+	ReadByPk(id any) (Actor, error)
+}
+
+func NewUseCase(repo AccountRepositoryInterface) UsecaseInterface {
+	return AccountUsecase{
 		repo: repo,
 	}
 }
 
-func (u AccountUsecase) create(a *Actor) error {
-	return u.repo.save(a)
+func (u AccountUsecase) Create(a *Actor) error {
+	return u.repo.Save(a)
 }
 
-func (u AccountUsecase) getByUsername(username string) (Actor, error) {
+func (u AccountUsecase) GetByUsername(username string) (Actor, error) {
 	return u.repo.FindByUsername(username)
 }
 

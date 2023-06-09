@@ -8,8 +8,17 @@ type CustomersRepository struct {
 	db *gorm.DB
 }
 
-func NewCustomersRepository(db *gorm.DB) *CustomersRepository {
-	return &CustomersRepository{db: db}
+type CustomerRepositoryInterface interface {
+	Save(customers *Customers) error
+	Find() ([]Customers, error)
+	FindById(id any) (Customers, error)
+	Update(customers *Customers) error
+	Delete(customer *Customers) error
+	FindByEmail(email, firstName string) ([]Customers, error)
+}
+
+func NewCustomersRepository(db *gorm.DB) CustomerRepositoryInterface {
+	return &CustomersRepository{db}
 }
 
 func (c CustomersRepository) Save(customers *Customers) error {

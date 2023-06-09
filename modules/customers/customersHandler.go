@@ -16,16 +16,24 @@ type CreateRequest struct {
 }
 
 type RequestHandler struct {
-	ctrl *CustomersControllers
+	ctrl CustomerControllersInterface
 }
 
-func NewRequestHandler(ctrl *CustomersControllers) *RequestHandler {
+type CustomersHandlerInterface interface {
+	Create(c *gin.Context)
+	Read(c *gin.Context)
+	ReadByPk(c *gin.Context)
+	Update(c *gin.Context)
+	Delete(c *gin.Context)
+}
+
+func NewRequestHandler(ctrl CustomerControllersInterface) CustomersHandlerInterface {
 	return &RequestHandler{
 		ctrl: ctrl,
 	}
 }
 
-func DefaultRequestHandler(db *gorm.DB) *RequestHandler {
+func DefaultRequestHandler(db *gorm.DB) CustomersHandlerInterface {
 	return NewRequestHandler(
 		NewConstomersConstroller(
 			NewUseCase(
